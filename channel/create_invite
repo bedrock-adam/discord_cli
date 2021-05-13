@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+
+require 'discordrb'
+# require 'pry-byebug'
+
+module Discordrb
+  class Invite
+    def initialize(data, bot)
+      @bot = bot
+
+      @channel = if data['channel_id'] # || bot.channel
+                   bot.channel(data['channel_id'])
+                 else
+                   InviteChannel.new(data['channel'], bot)
+                 end
+
+      @server = if data['guild_id']
+                  bot.server(data['guild_id'])
+                else
+                  InviteServer.new(data['guild'], bot)
+                end
+
+      @uses = data['uses']
+      @inviter = data['inviter'] ? (@bot.user(data['inviter']['id'].to_i) || User.new(data['inviter'], bot)) : nil
+      @temporary = data['temporary']
+      @revoked = data['revoked']
+      @online_member_count = data['approximate_presence_count']
+      @member_count = data['approximate_member_count']
+      @max_age = data['max_age']
+      @created_at = data['created_at']
+
+      @code = data['code']
+    end
+  end
+end
+
+bot = Discordrb::Bot.new token: ENV['BOT_TOKEN']
+bot.run :async
+
+require 'optparse'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: create_invite [options]"
+
+  opts.on("--channel_id [CHANNEL_ID]", Integer) do |channel_id|
+    options[:channel_id] = channel_id
+  end
+
+  opts.on("--max_age [MAX_AGE]", Integer) do |max_age|
+    options[:max_age] = max_age
+  end
+
+  opts.on("--max_uses [MAX_USES]", Integer) do |max_uses|
+    options[:max_uses] = max_uses
+  end
+
+  opts.on("--temporary [TEMPORARY]", TrueClass) do |temporary|
+    options[:temporary] = temporary
+  end
+
+  opts.on("--unique [UNIQUE]", TrueClass) do |unique|
+    options[:unique] = unique
+  end
+end.parse!
+
+# channel = bot.find_channel(channel_name)
+channel = bot.channel(options.fetch(:channel_id))
+
+# max_age 86400 24 hours
+# def make_invite(max_age = 0, max_uses = 0, temporary = false, unique = false, reason = nil)
+
+invite = channel.make_invite(
+  options.fetch(:max_age),
+  options.fetch(:max_uses),
+  options.fetch(:temporary),
+  options.fetch(:unique))
+
+puts "Created invite"
+puts "\tuses:\t\t#{invite.uses}"
+puts "\tmax_age:\t#{invite.max_age}"
+puts "\tmax_uses:\t#{invite.max_uses}"
+puts "\ttemporary:\t#{invite.temporary}"
+puts "\turl:\t\t#{invite.url}"
