@@ -1,18 +1,6 @@
 # Discord CLI
 
-Discord CLI is a shell implementation of the discord API, implemented in ruby.
-
-### Why
-
-At Bedrock Mentoring, we needed a way to measure how effective our marketing campaigns were at bringing aspiring programmers into our 
-awesome discord community (helps land job interviews).
-
-We quickly learned that the discord UI does not support the creation of unique channel unlimited invite tokens, which would allow us
-to tie marketing campaign to them.
-
-We later learnt however, that this is possible through the discord API.
-
-Enter the `channel/create_invite` script, that allows us to create unique unlimited invite tokens (for a channel) quickly.
+Discord CLI is an (incomplete) shell implementation of the discord API, implemented in ruby.
 
 ## Prerequisites
 
