@@ -1,6 +1,6 @@
 # Discord CLI
 
-Discord CLI is an (incomplete) shell implementation of the discord API, implemented in ruby.
+Discord CLI is an (incomplete) shell interface to the discord API, implemented in ruby.
 
 ## Prerequisites
 
